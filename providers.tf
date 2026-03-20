@@ -29,9 +29,8 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Terraforn   = "true"
-      Environment = "dev"
-      Project     = "terraform-project"
+      Terraforn = "true"
+      Project   = "terraform-project"
     }
   }
 }

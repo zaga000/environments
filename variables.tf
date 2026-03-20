@@ -20,3 +20,21 @@ variable "vpc_cidr_block" {
   }
 
 }
+
+variable "public_subnet_count" {
+  description = "Number of public subnets to create"
+  type        = number
+  default     = 2
+}
+
+variable "private_subnet_count" {
+  description = "Number of public subnets to create"
+  type        = number
+  default     = 2
+}
+
+variable "db_subnet_count" {
+  description = "Number of public subnets to create"
+  type        = number
+  default     = 2
+}
