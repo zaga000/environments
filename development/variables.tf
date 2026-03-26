@@ -73,3 +73,18 @@ variable "tags" {
   default     = {}
   description = "Additional tags"
 }
+
+variable "vpcs_config" {
+  description = "Complex map of VPC configurations"
+  type = map(list(object({
+    vpc_name = string
+    vpc_attributes = object({
+      cidr_block           = optional(string, "10.10.0.0/16")
+      private_subnet_count = number
+      public_subnet_count  = number
+      db_subnet_count      = number
+    })
+  })))
+
+
+}
