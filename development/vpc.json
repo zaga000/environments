@@ -1,0 +1,22 @@
+{
+  "vpcs": [
+    {
+      "vpc_name": "my-vpc-1",
+      "vpc_attributes": {
+        "cidr_block": "10.0.0.0/16",
+        "private_subnet_count": 2,
+        "public_subnet_count": 2,
+        "db_subnet_count": 2
+      }
+    },
+    {
+      "vpc_name": "my-vpc-2",
+      "vpc_attributes": {
+        "cidr_block": "10.1.0.0/16",
+        "private_subnet_count": 2,
+        "public_subnet_count": 2,
+        "db_subnet_count": 2
+      }
+    }
+  ]
+}

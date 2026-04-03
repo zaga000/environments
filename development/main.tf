@@ -1,3 +1,4 @@
+locals { vpcs_config = jsondecode(file("${path.module}/vpc.json")) }
 resource "random_id" "bucket_suffix" {
   byte_length = 4
 }
@@ -39,15 +40,15 @@ module "s3" {
 }
 
 module "multi_vpc" {
-  source = "../../terraform-aws-vpc"
+  source = "git::https://github.com/zaga000/terraform-aws-vpc.git?ref=v0.0.2"
 
-for_each = { for vpc in var.vpcs_config["vpcs"] : vpc.vpc_name => vpc.vpc_attributes }
+  for_each = { for vpc in local.vpcs_config.vpcs : vpc.vpc_name => vpc.vpc_attributes }
   name                 = each.key
   environment          = var.environment
   vpc_cidr_block       = each.value.cidr_block
-  public_subnet_count  = each.value.public_subnet_count
-  private_subnet_count = each.value.private_subnet_count
-  db_subnet_count      = each.value.db_subnet_count
+  public_subnet_count  = lookup(each.value, "public_subnet_count", lookup(each.value, "public_subnets_count", var.public_subnet_count))
+  private_subnet_count = lookup(each.value, "private_subnet_count", lookup(each.value, "private_subnets_count", var.private_subnet_count))
+  db_subnet_count      = lookup(each.value, "db_subnet_count", lookup(each.value, "db_subnets_count", var.db_subnet_count))
 
   tags = merge(
     var.tags,
