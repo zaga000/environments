@@ -1,8 +1,12 @@
+# Load VPC configuration from JSON file
 locals { vpcs_config = jsondecode(file("${path.module}/vpc.json")) }
+
+# Generate a random suffix for the S3 bucket name to ensure uniqueness
 resource "random_id" "bucket_suffix" {
   byte_length = 4
 }
 
+# Legacy single VPC module (commented out - replaced by multi_vpc module below)
 #module "vpc" {
 #  source = "git::https://github.com/zaga000/terraform-aws-vpc.git?ref=v0.0.1"
 #
@@ -14,15 +18,15 @@ resource "random_id" "bucket_suffix" {
 #  db_subnet_count      = var.db_subnet_count
 #
 #  tags = merge(
-#    var.tags,
-#    local.mandatory_tags,
+#    local.common_tags,
 #    {
-#      name = "{var.environment}-${var.name}-vpc"
+#      name = "${local.project_name}-vpc"
 #    }
 #  )
 #
 #}
 
+# S3 bucket module 
 module "s3" {
   source        = "terraform-aws-modules/s3-bucket/aws"
   version       = "4.1.2"
@@ -30,19 +34,18 @@ module "s3" {
   force_destroy = true
 
   tags = merge(
-    var.tags,
-    local.mandatory_tags,
+    local.common_tags,
     {
-      name = "${var.environment}-${var.name}-bucket"
+      name = "${local.project_name}-s3-bucket"
     }
   )
 
 }
-
+# Multi-VPC module that creates multiple VPCs based on configuration in vpc.json
 module "multi_vpc" {
   source = "git::https://github.com/zaga000/terraform-aws-vpc.git?ref=v0.0.2"
 
-  for_each = { for vpc in local.vpcs_config.vpcs : vpc.vpc_name => vpc.vpc_attributes }
+  for_each             = { for vpc in local.vpcs_config.vpcs : vpc.vpc_name => vpc.vpc_attributes }
   name                 = each.key
   environment          = var.environment
   vpc_cidr_block       = each.value.cidr_block
@@ -51,10 +54,43 @@ module "multi_vpc" {
   db_subnet_count      = lookup(each.value, "db_subnet_count", lookup(each.value, "db_subnets_count", var.db_subnet_count))
 
   tags = merge(
-    var.tags,
-    local.mandatory_tags,
+    local.common_tags,
     {
-      name = "${var.environment}-${var.name}-vpc"
+      name = "${local.project_name}-vpc"
     }
   )
 }
+
+# Commented out VPC resource (separate from the multi_vpc module above)
+resource "aws_vpc" "vpc" {
+  cidr_block = "10.2.0.0/24"
+
+  tags = {
+    name = "my-vpc-01"
+  }
+  lifecycle {
+    ignore_changes = [tags]
+  }
+}
+
+# Commented out data source for VPC (used for importing existing VPC)
+#data "aws_vpc" "vpc" {
+#  filter {
+#    name = "tag:name"
+#    values = ["my-vpc-01"]
+#  }
+#}
+
+# Commented out removed block (used for refactoring/migration)
+#removed {
+#  from = aws_vpc.vpc
+#  lifecycle {
+#    destroy = false
+#  }
+#}
+
+# Commented out import block (used for importing existing AWS resources)
+#import {
+#  to = aws_vpc.vpc
+#  id = data.aws_vpc.vpc.id
+#}
