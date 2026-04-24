@@ -19,10 +19,16 @@ jobs:
         with:
           terraform_version: 1.14.8
       
-      - run: terraform init
+      - name: Tarrafrom Init
+        run: terraform init
+        working-directory: ./development
+
       - run: terraform fmt -recursive -check
       - run: terraform validate
-      - run: terraform plan -out=tfplan
+
+      - name: Tarraform Plan
+        run: terraform plan -out=tfplan
+        working-directory: ./development
 
       - name: Upload Terraform Plan
         uses: actions/upload-artifact@v4
