@@ -7,5 +7,6 @@ repos:
           - --args=-recursive
       - id: terraform_validate
         args:
-          - --hook-config=--retry-once-with-cleanup=true
+          - --tf-init-args=-upgrade
+          - --allow-missing-comment
         files: ^development/.*\.tf$
