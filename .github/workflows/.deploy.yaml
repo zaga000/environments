@@ -19,7 +19,7 @@ jobs:
         with:
           terraform_version: 1.14.8
       
-      - name: Tarrafrom Init
+      - name: Terrafrom Init
         run: terraform init
         working-directory: ./development
 
@@ -55,6 +55,7 @@ jobs:
       - run: terraform init
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
+        working-directory: ./development
 
   
 
