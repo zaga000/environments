@@ -26,7 +26,11 @@ jobs:
         working-directory: ./development
 
       - run: terraform fmt -recursive -check
+        working-directory: ./development
+
       - run: terraform validate
+        working-directory: ./development
+
 
       - name: Tarraform Plan
         run: terraform plan -out=tfplan
