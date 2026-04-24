@@ -26,11 +26,3 @@ jobs:
 
       - name: Run pre-commit hooks
         run: pre-commit run --all-files
-      
-      - name: Reveal Modified Files
-        if: failure()
-        run: |
-          echo "=== WHAT CHANGED: ==="
-          git status
-          echo "=== DETAILS: ==="
-          git diff

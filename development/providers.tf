@@ -1,6 +1,6 @@
 # Configure Terraform version and S3 backend for state management
 terraform {
-  required_version = ">= 1.14.0"
+  required_version = "~>= 1.14.0"
 
   backend "s3" {
     bucket         = "dev-terraform-state-mini-project-551"
@@ -13,7 +13,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 6.0"
+      version = "6.37.0"
     }
   }
 }
