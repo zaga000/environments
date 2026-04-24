@@ -30,25 +30,25 @@ jobs:
           name: tfplan
           path: tfplan
     
-    apply:
-      name: Terraform Apply
-      needs: plan
-      runs-on: ubuntu-latest
-      environment: production
-      steps:
-        - uses: actions/checkout@v4
-        - uses: hashicorp/setup-terraform@v3
-          with:
-            terraform_version: 1.14.8
+  apply:
+    name: Terraform Apply
+    needs: plan
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.14.8
 
-        - name: Dowload Plan artifact
-          uses: actions/download-artifact@v4
-          with:
-            name: tfplan
+      - name: Dowload Plan artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan
 
-        - run: terraform init
-        - name: Terraform Apply
-        - run: terraform apply -auto-approve tfplan
+      - run: terraform init
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
 
   
 
