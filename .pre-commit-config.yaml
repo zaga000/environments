@@ -11,10 +11,3 @@ repos:
           - --hook-config=--init-args=-backend=false
         files: ^development/.*\.tf$
       
-      - name: Reveal Modified Files
-        if: failure()
-        run: |
-          echo "=== WHAT CHANGED: ==="
-          git status
-          echo "=== DETAILS: ==="
-          git diff
