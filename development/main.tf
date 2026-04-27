@@ -61,7 +61,6 @@ module "multi_vpc" {
   )
 }
 
-<<<<<<< HEAD
 # Commented out VPC resource (separate from the multi_vpc module above)
 resource "aws_vpc" "vpc" {
   cidr_block = "10.2.0.0/24"
@@ -95,12 +94,11 @@ resource "aws_vpc" "vpc" {
 #  to = aws_vpc.vpc
 #  id = data.aws_vpc.vpc.id
 #}
-=======
+
 module "vpc2" {
   source = "git::https://github.com/zaga000/terraform-aws-vpc.git?ref=v0.0.2"
 
-  name                 = "test2"
-   environment          = var.environment
-  vpc_cidr_block       = "10.20.0.0/16"
+  name = "test"
+    environment = var.environment
+  vpc_cidr_block = "10.3.0.0/24"
 }
->>>>>>> bf11aba (Test)
