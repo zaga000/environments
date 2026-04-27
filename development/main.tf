@@ -98,7 +98,7 @@ resource "aws_vpc" "vpc" {
 module "vpc2" {
   source = "git::https://github.com/zaga000/terraform-aws-vpc.git?ref=v0.0.2"
 
-  name = "test"
-    environment = var.environment
+  name           = "test"
+  environment    = var.environment
   vpc_cidr_block = "10.3.0.0/24"
 }
