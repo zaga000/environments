@@ -24,6 +24,8 @@ jobs:
       - name: Terrafrom Init
         run: terraform init
         working-directory: ./development
+        env:
+          TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
 
       - run: terraform fmt -recursive -check
         working-directory: ./development
@@ -72,7 +74,3 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
         working-directory: ./development
-
-  
-
-
