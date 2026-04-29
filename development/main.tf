@@ -7,24 +7,25 @@ resource "random_id" "bucket_suffix" {
 }
 
 # Legacy single VPC module (commented out - replaced by multi_vpc module below)
-#module "vpc" {
-#  source = "git::https://github.com/zaga000/terraform-aws-vpc.git?ref=v0.0.1"
-#
-#  environment          = var.environment
-#  name                 = var.name
-#  vpc_cidr_block       = var.vpc_cidr_block
-#  public_subnet_count  = var.public_subnet_count
-#  private_subnet_count = var.private_subnet_count
-#  db_subnet_count      = var.db_subnet_count
-#
-#  tags = merge(
-#    local.common_tags,
-#    {
-#      name = "${local.project_name}-vpc"
-#    }
-#  )
-#
-#}
+module "vpc" {
+  source = "app.terraform.io/tf-test-min001/vpc/aws"
+  version = "0.0.3"
+
+  environment          = var.environment
+  name                 = var.name
+  vpc_cidr_block       = var.vpc_cidr_block
+  public_subnet_count  = var.public_subnet_count
+  private_subnet_count = var.private_subnet_count
+  db_subnet_count      = var.db_subnet_count
+
+  tags = merge(
+    local.common_tags,
+    {
+      name = "${local.project_name}-vpc"
+    }
+  )
+
+}
 
 # S3 bucket module 
 module "s3" {
@@ -42,24 +43,24 @@ module "s3" {
 
 }
 # Multi-VPC module that creates multiple VPCs based on configuration in vpc.json
-module "multi_vpc" {
-  source = "git::https://github.com/zaga000/terraform-aws-vpc.git?ref=v0.0.2"
-
-  for_each             = { for vpc in local.vpcs_config.vpcs : vpc.vpc_name => vpc.vpc_attributes }
-  name                 = each.key
-  environment          = var.environment
-  vpc_cidr_block       = each.value.cidr_block
-  public_subnet_count  = lookup(each.value, "public_subnet_count", lookup(each.value, "public_subnets_count", var.public_subnet_count))
-  private_subnet_count = lookup(each.value, "private_subnet_count", lookup(each.value, "private_subnets_count", var.private_subnet_count))
-  db_subnet_count      = lookup(each.value, "db_subnet_count", lookup(each.value, "db_subnets_count", var.db_subnet_count))
-
-  tags = merge(
-    local.common_tags,
-    {
-      name = "${local.project_name}-vpc"
-    }
-  )
-}
+#module "multi_vpc" {
+#  source = "git::https://github.com/zaga000/terraform-aws-vpc.git?ref=v0.0.2"
+#
+#  for_each             = { for vpc in local.vpcs_config.vpcs : vpc.vpc_name => vpc.vpc_attributes }
+#  name                 = each.key
+#  environment          = var.environment
+#  vpc_cidr_block       = each.value.cidr_block
+#  public_subnet_count  = lookup(each.value, "public_subnet_count", lookup(each.value, "public_subnets_count", var.public_subnet_count))
+#  private_subnet_count = lookup(each.value, "private_subnet_count", lookup(each.value, "private_subnets_count", var.private_subnet_count))
+#  db_subnet_count      = lookup(each.value, "db_subnet_count", lookup(each.value, "db_subnets_count", var.db_subnet_count))
+#
+#  tags = merge(
+#    local.common_tags,
+#    {
+#      name = "${local.project_name}-vpc"
+#    }
+#  )
+#}
 
 # Commented out VPC resource (separate from the multi_vpc module above)
 resource "aws_vpc" "vpc" {
