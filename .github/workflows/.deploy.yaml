@@ -55,6 +55,7 @@ jobs:
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.14.8
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
       
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -72,6 +73,7 @@ jobs:
 
       - run: terraform init
         working-directory: ./development
+        
         
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
