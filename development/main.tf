@@ -8,7 +8,7 @@ resource "random_id" "bucket_suffix" {
 
 # Legacy single VPC module (commented out - replaced by multi_vpc module below)
 module "vpc" {
-  source = "app.terraform.io/tf-test-min001/vpc/aws"
+  source  = "app.terraform.io/tf-test-min001/vpc/aws"
   version = "0.0.3"
 
   environment          = var.environment
