@@ -1,9 +1,12 @@
 name: 2. Deploy
 
 on: 
-  pull_request:
+  push:
     branches:
       - main
+
+env:
+  TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
 
 jobs:
   plan:
@@ -24,7 +27,7 @@ jobs:
       - name: Terrafrom Init
         run: terraform init
         working-directory: ./development
-
+ 
       - run: terraform fmt -recursive -check
         working-directory: ./development
 
@@ -52,20 +55,26 @@ jobs:
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.14.8
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
       - name: Dowload Plan artifact
         uses: actions/download-artifact@v4
         with:
           name: tfplan
           path: ./development
+          
 
       - run: terraform init
         working-directory: ./development
         
+        
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
         working-directory: ./development
-
-  
-
-
